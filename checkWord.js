@@ -12,6 +12,7 @@ export async function check_if_word_exists(word, vocApi) {
       return true;
     }
   } catch (error) {
+    // console.log(error.response);
     return false;
   }
 }
