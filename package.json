@@ -1,7 +1,6 @@
 {
   "name": "illegibletextbot",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -19,8 +18,9 @@
   "type": "module",
   "homepage": "https://github.com/VKChabra/IllegibleTextBot#readme",
   "dependencies": {
-    "axios": "^1.2.6",
     "dotenv": "^16.0.3",
     "node-telegram-bot-api": "^0.61.0"
-  }
+  },
+  "keywords": [],
+  "description": ""
 }

@@ -1,18 +1,20 @@
-import axios from "axios";
-
 export async function check_if_word_exists(word, vocApi) {
   const url =
-    "https://api.wordnik.com/v4/word.json/" +
+    "https://dictionaryapi.com/api/v3/references/sd3/json/" +
     word +
-    `/definitions?limit=200&includeRelated=false&useCanonical=false&includeTags=false&api_key=${vocApi}`;
+    `?key=${vocApi}`;
 
   try {
-    const response = await axios.get(url);
-    if (response.status === 200) {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    if (JSON.stringify(data).includes("meta")) {
       return true;
+    } else {
+      return false;
     }
   } catch (error) {
-    // console.log(error.response);
+    console.log(error);
     return false;
   }
 }
