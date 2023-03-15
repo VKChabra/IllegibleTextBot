@@ -22,9 +22,7 @@ bot.on("message", async (msg) => {
   // console.log(RegExpMsg.test(userMsg));
   if (RegExpMsg.test(userMsg.toLowerCase())) {
     // console.log("Only english letters");
-    if (
-      await check_if_word_exists(userMsg.toLowerCase().split(" ")[0], vocApi)
-    ) {
+    if (await check_if_word_exists(userMsg, vocApi)) {
       // console.log("word should be readable");
       return;
     } else bot.sendMessage(msg.chat.id, transliterate(userMsg));
