@@ -7,7 +7,9 @@ const token = process.env.TOKEN;
 const vocApi = process.env.VOCAB_API;
 const bot = new TelegramBot(token, { polling: true });
 
-const RegExpMsg = /^\d*[a-zA-Z][a-zA-Z0-9 {[}\];:"'<,>.?/]*$/;
+const RegExpMsg = /^\d*[a-zA-Z][a-zA-Z0-9 {[}\];:"'<,>.?&/()!@#$%^*-_]*$/;
+const RegExpLink =
+  /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
 
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(
@@ -16,14 +18,25 @@ bot.onText(/\/start/, (msg) => {
   );
 });
 
+function isValidMsg(userMsg) {
+  if (
+    RegExpMsg.test(userMsg.toLowerCase()) &&
+    !RegExpLink.test(userMsg.toLowerCase())
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 bot.on("message", async (msg) => {
   const userMsg = msg.text?.toString();
   if (!userMsg) return;
-  // console.log(RegExpMsg.test(userMsg));
-  if (RegExpMsg.test(userMsg.toLowerCase())) {
-    // console.log("Only english letters");
-    if (await check_if_word_exists(userMsg, vocApi)) {
-      // console.log("word should be readable");
+  if (isValidMsg(userMsg)) {
+    if (
+      groupType !== "private" &&
+      (await check_if_word_exists(userMsg, vocApi))
+    ) {
       return;
     } else bot.sendMessage(msg.chat.id, transliterate(userMsg));
   } else return;
