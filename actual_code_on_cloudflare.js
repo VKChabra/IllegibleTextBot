@@ -126,8 +126,8 @@ function isValidMsg(userMsg) {
   // should return true if msg is valid
   if (
     RegExpMsg.test(userMsg.toLowerCase()) &&
-    (!RegExpLink.test(userMsg.toLowerCase()) ||
-      !RegExpTelegramLink.test(userMsg.toLowerCase())) &&
+    !RegExpLink.test(userMsg.toLowerCase()) &&
+    !RegExpTelegramLink.test(userMsg.toLowerCase()) &&
     !RegExpNumber.test(userMsg.toLowerCase())
   ) {
     return true;

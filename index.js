@@ -7,10 +7,6 @@ const token = process.env.TOKEN;
 const vocApi = process.env.VOCAB_API;
 const bot = new TelegramBot(token, { polling: true });
 
-const RegExpMsg = /^\d*[a-zA-Z][a-zA-Z0-9 {[}\];:"'<,>.?&/()!@#$%^*-_]*$/;
-const RegExpLink =
-  /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
-
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
@@ -18,10 +14,19 @@ bot.onText(/\/start/, (msg) => {
   );
 });
 
+const RegExpMsg = /^\S[a-zA-Z0-9\s[.\]{[}\];:"'<,>.?&/()!@#$%^*-_]*$/;
+const RegExpLink =
+  /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+const RegExpTelegramLink = /\b(?:https?:\/\/)?t\.me\/[a-zA-Z0-9_]+/;
+const RegExpNumber = /^[0-9,.-]+$/;
+
 function isValidMsg(userMsg) {
+  // should return true if msg is valid
   if (
     RegExpMsg.test(userMsg.toLowerCase()) &&
-    !RegExpLink.test(userMsg.toLowerCase())
+    !RegExpLink.test(userMsg.toLowerCase()) &&
+    !RegExpTelegramLink.test(userMsg.toLowerCase()) &&
+    !RegExpNumber.test(userMsg.toLowerCase())
   ) {
     return true;
   } else {
