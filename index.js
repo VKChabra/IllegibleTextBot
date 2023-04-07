@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const token = process.env.TOKEN;
 const vocApi = process.env.VOCAB_API;
+const secVocApi = process.env.SEC_VOC_API;
 const bot = new TelegramBot(token, { polling: true });
 
 bot.onText(/\/start/, (msg) => {
@@ -36,13 +37,13 @@ function isValidMsg(userMsg) {
 
 bot.on("message", async (msg) => {
   const userMsg = msg.text?.toString();
+  const groupType = msg.chat?.type?.toString();
   if (!userMsg) return;
-  if (isValidMsg(userMsg)) {
-    if (
-      groupType !== "private" &&
-      (await check_if_word_exists(userMsg, vocApi))
-    ) {
-      return;
-    } else bot.sendMessage(msg.chat.id, transliterate(userMsg));
-  } else return;
+  if (!isValidMsg(userMsg)) return;
+  if (
+    groupType !== "private" &&
+    (await check_if_word_exists(userMsg, vocApi, secVocApi))
+  )
+    return;
+  bot.sendMessage(msg.chat.id, transliterate(userMsg));
 });
