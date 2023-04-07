@@ -1,23 +1,24 @@
-async function check_if_word_exists(userMsg, vocApi) {
+async function check_if_word_exists(userMsg, vocApi, secVocApi) {
   const words = userMsg.toLowerCase().split(" ");
   let index = 0;
 
-  if (words.length > 0 && words[0].length < 3) {
-    index = 1;
-  }
-  if (words.length > 1 && words[1]?.length < 3) {
-    index = 2;
+  for (let i = 0; i < 2 && i < words.length; i++) {
+    if (words[i]?.length < 3) {
+      index = i + 1;
+    }
   }
 
-  const url =
-    "https://dictionaryapi.com/api/v3/references/sd3/json/" +
-    words[index] +
-    `?key=${vocApi}`;
+  const url = `https://dictionaryapi.com/api/v3/references/sd3/json/${words[index]}?key=${vocApi}`;
+  const url2 = `https://api.wordnik.com/v4/word.json/${words[index]}/definitions?limit=200&includeRelated=false&useCanonical=false&includeTags=false&api_key=${secVocApi}`;
 
   try {
-    const response = await fetch(url);
-    const data = await response.json();
+    const [data, data2] = await Promise.all([
+      fetch(url).then((res) => res.json()),
+      fetch(url2).then((res) => res.json()),
+    ]);
     if (JSON.stringify(data).includes("meta")) {
+      return true;
+    } else if (JSON.stringify(data2).includes("text")) {
       return true;
     } else {
       return false;
@@ -143,36 +144,32 @@ export default {
         const reqBody = await request.json();
         const userMsg = reqBody.message?.text?.toString();
         const groupType = reqBody.message?.chat?.type?.toString();
+
         if (!userMsg) {
-          // console.log(reqBody);
           console.log("No user message");
-          return new Response(new String("No user message"), { status: 200 });
+          return new Response("No user message", { status: 200 });
         }
-        if (isValidMsg(userMsg)) {
-          if (
-            groupType !== "private" &&
-            (await check_if_word_exists(userMsg, env.VOCAB_API))
-          ) {
-            console.log(groupType, "should not translate");
-            return new Response(new String("Should not translate"), {
-              status: 200,
-            });
-          } else {
-            const chatId = reqBody.message?.chat.id;
-            const text = transliterate(userMsg);
-            const url = `https://api.telegram.org/bot${env.API_TOKEN}/sendMessage?chat_id=${chatId}&text=${text}`;
-            await fetch(url);
-          }
-        } else {
+        if (!isValidMsg(userMsg)) {
           console.log("Not valid message");
-          return new Response(new String("Not valid message"), {
-            status: 200,
-          });
+          return new Response("Not valid message", { status: 200 });
         }
+        if (
+          groupType !== "private" &&
+          (await check_if_word_exists(userMsg, env.VOCAB_API, env.SEC_VOC_API))
+        ) {
+          console.log(`${groupType} should not translate`);
+          return new Response("Should not translate", { status: 200 });
+        }
+
+        const chatId = reqBody.message?.chat.id;
+        const textTranslated = transliterate(userMsg);
+        const url = `https://api.telegram.org/bot${env.API_TOKEN}/sendMessage?chat_id=${chatId}&text=${textTranslated}`;
+        await fetch(url);
+
         return new Response("KK");
       } catch (error) {
         // console.log(error);
-        return new Response(new String("Bad request"), { status: 400 });
+        return new Response("Bad request", { status: 400 });
       }
     } else {
       return new Response(new String("Only POST methods are available"), {
