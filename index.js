@@ -15,7 +15,7 @@ bot.onText(/\/start/, (msg) => {
   );
 });
 
-const RegExpMsg = /^\S[a-zA-Z0-9\s[.\]{[}\];:"'<,>.?&/()!@#$%^*-_]*$/;
+const RegExpMsg = /^\S[a-zA-Z0-9\s[.\]{[}\]|;:"\\'`<,>.?&/()*!@#$%^*_~₴+=-]*$/;
 const RegExpLink =
   /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
 const RegExpTelegramLink = /\b(?:https?:\/\/)?t\.me\/[a-zA-Z0-9_]+/;
