@@ -121,7 +121,8 @@ function transliterate(input) {
   return result;
 }
 
-const RegExpMsg = /^\S[a-zA-Z0-9\s[.\]{[}\]|;:"\\'`<,>.?&/()*!@#$%^*_~₴+=-]*$/;
+const RegExpMsg =
+  /^(?=.*[a-zA-Z])[a-zA-Z0-9 !@#$%^&*()_+\-={[}\]:";'<,>.?/|\\]+$/;
 const RegExpLink =
   /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
 const RegExpTelegramLink = /\b(?:https?:\/\/)?t\.me\/[a-zA-Z0-9_]+/;
