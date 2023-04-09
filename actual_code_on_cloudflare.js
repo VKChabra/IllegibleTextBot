@@ -125,6 +125,7 @@ const RegExpMsg = /^\S[a-zA-Z0-9\s[.\]{[}\];:"'<,>.?&/()!@#$%^*-_]*$/;
 const RegExpLink =
   /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
 const RegExpTelegramLink = /\b(?:https?:\/\/)?t\.me\/[a-zA-Z0-9_]+/;
+const RegExpTelegramTag = /^@\w+/;
 const RegExpNumber = /^[0-9,.-]+$/;
 
 function isValidMsg(userMsg) {
@@ -133,6 +134,7 @@ function isValidMsg(userMsg) {
     RegExpMsg.test(userMsg.toLowerCase()) &&
     !RegExpLink.test(userMsg.toLowerCase()) &&
     !RegExpTelegramLink.test(userMsg.toLowerCase()) &&
+    !RegExpTelegramTag.test(userMsg.toLowerCase()) &&
     !RegExpNumber.test(userMsg.toLowerCase())
   ) {
     return true;
