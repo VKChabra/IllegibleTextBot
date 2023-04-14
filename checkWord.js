@@ -3,8 +3,10 @@ export async function check_if_word_exists(userMsg, vocApi, secVocApi) {
   let index = 0;
 
   for (let i = 0; i < 2 && i < words.length; i++) {
-    if (words[i]?.length < 3) {
-      index = i + 1;
+    if (words[i].length < 3) {
+      index += 1;
+    } else {
+      break;
     }
   }
 
