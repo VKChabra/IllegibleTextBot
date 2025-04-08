@@ -19,7 +19,7 @@
   "homepage": "https://github.com/VKChabra/IllegibleTextBot#readme",
   "dependencies": {
     "dotenv": "^16.0.3",
-    "node-telegram-bot-api": "^0.61.0"
+    "node-telegram-bot-api": "^0.66.0"
   },
   "keywords": [],
   "description": ""
